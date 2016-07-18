@@ -1,0 +1,25 @@
+{% extends 'public/base.html' %}
+
+{% block content %}
+
+  {% if user.person.team == None %}
+    {% include "public/account/join_team.html" %}
+    {% include "public/account/create_team.html" %}
+  {% else %}
+    {% include "public/account/individual_submissions.html" %}
+    {% include "public/account/team_submissions.html" %}
+    {% include "public/account/make_submission.html" %}
+    {% include "public/account/change_team.html" %}
+  {% endif %}
+
+{% endblock %}
+
+{% block javascript %}
+  {{ block.super }}
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $('.select').material_select();
+    });
+  </script>
+{% endblock %}

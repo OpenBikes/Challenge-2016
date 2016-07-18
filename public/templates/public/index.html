@@ -1,0 +1,56 @@
+{% extends 'public/base.html' %}
+
+{% load static from staticfiles %}
+
+{% block content %}
+    <div class="section">
+      </br>
+      </br>
+      <div class="center container">
+        <img style="width: 70%;" src="{% static 'img/openbikes.png' %}" alt="aidor_logo" />
+      </div>
+      </br>
+      </br>
+    </div>
+
+    <div class="section">
+      <table class="centered striped responsive-table">
+        <thead>
+          <tr>
+            <th data-field="position"><i class="fa fa-trophy"></i> Classement</th>
+            <th data-field="team"><i class="fa fa-users"></i> Equipe</th>
+            <th data-field="university"><i class="fa fa-graduation-cap"></i> Université/Ecole</th>
+            <th data-field="score"><i class="fa fa-bullseye"></i> Score</th>
+            <th data-field="submissions"><i class="fa fa-cloud-upload"></i> Soumissions</th>
+            <th data-field="last"><i class="fa fa-clock-o"></i> Dernière soumission</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>BG</td>
+            <td>Toulouse</td>
+            <td>0.9</td>
+            <td>10</td>
+            <td>10</td>
+          </tr>
+          <tr>
+            <td>1</td>
+            <td>BG</td>
+            <td>Toulouse</td>
+            <td>0.9</td>
+            <td>10</td>
+            <td>10</td>
+          </tr>
+          <tr>
+            <td>1</td>
+            <td>BG</td>
+            <td>Toulouse</td>
+            <td>0.9</td>
+            <td>10</td>
+            <td>10</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+{% endblock %}

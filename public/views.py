@@ -6,12 +6,13 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.mail import EmailMessage
 from django.core.urlresolvers import reverse
+from django.db.models.aggregates import Count, Max, Min
 from django.http import Http404
 from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
 from itsdangerous import URLSafeTimedSerializer
 
-from public.models import Person, User, School, Team
+from public.models import Person, User, School, Submission, Team
 
 
 # Random token generator
@@ -19,7 +20,14 @@ TS = URLSafeTimedSerializer(settings.SECRET_KEY)
 
 
 def index(request):
-    return render(request, 'public/index.html')
+    teams = Team.objects.annotate(best_score=Max('person__submission__score'),
+                                  nbr_submissions=Count('person__submission'),
+                                  last_submission=Min('person__submission__at'))\
+                        .order_by('best_score')
+    context = {
+        'teams': teams,
+    }
+    return render(request, 'public/index.html', context)
 
 
 def faq(request):
@@ -159,9 +167,12 @@ def password_reset(request, token):
 
 @login_required(login_url='/login/')
 def account(request):
-    schools = School.objects.order_by('name').all()
     context = {
-        'schools': schools,
+        'schools': School.objects.order_by('name').all(),
+        'submissions': Submission.objects.filter(by=request.user.person)\
+                                         .order_by('at')\
+                                         .all(),
+        'team_members': request.user.person.team.members
     }
     return render(request, 'public/account.html', context)
 
@@ -175,4 +186,19 @@ def create_team(request):
     request.user.person.team = team
     request.user.person.captain = True
     request.user.person.save()
+    return redirect('public:account')
+
+
+@login_required(login_url='/login/')
+def make_submission(request):
+    file = request.FILES['file']
+    rows = file.read().decode('utf-8').splitlines()
+    data = [row.split(',') for row in rows]
+    submission = Submission(
+        at=dt.datetime.now(),
+        by=request.user.person,
+        valid=True,
+        score=1
+    )
+    submission.save()
     return redirect('public:account')

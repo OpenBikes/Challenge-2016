@@ -21,34 +21,20 @@
             <th data-field="team"><i class="fa fa-users"></i> Equipe</th>
             <th data-field="university"><i class="fa fa-graduation-cap"></i> Université/Ecole</th>
             <th data-field="score"><i class="fa fa-bullseye"></i> Score</th>
-            <th data-field="submissions"><i class="fa fa-cloud-upload"></i> Soumissions</th>
-            <th data-field="last"><i class="fa fa-clock-o"></i> Dernière soumission</th>
+            <th data-field="submissions"><i class="fa fa-cloud-upload"></i> Soumission(s)</th>
+            <th data-field="last"><i class="fa fa-calendar"></i> Dernière soumission</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>1</td>
-            <td>BG</td>
-            <td>Toulouse</td>
-            <td>0.9</td>
-            <td>10</td>
-            <td>10</td>
-          </tr>
-          <tr>
-            <td>1</td>
-            <td>BG</td>
-            <td>Toulouse</td>
-            <td>0.9</td>
-            <td>10</td>
-            <td>10</td>
-          </tr>
-          <tr>
-            <td>1</td>
-            <td>BG</td>
-            <td>Toulouse</td>
-            <td>0.9</td>
-            <td>10</td>
-            <td>10</td>
+            {% for team in teams %}
+              <td>{{ forloop.counter }}</td>
+              <td>{{ team.name }}</td>
+              <td>{{ team.school }}</td>
+              <td>{{ team.best_score }}</td>
+              <td>{{ team.nbr_submissions }}</td>
+              <td>{{ team.last_submission|date:"d/m/Y" }}</td>
+            {% endfor %}
           </tr>
         </tbody>
       </table>

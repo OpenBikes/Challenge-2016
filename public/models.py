@@ -31,6 +31,10 @@ class Team(models.Model):
         return '{}, {}, {}'.format(self.name, self.school.name, self.school.city)
 
     @property
+    def members(self):
+        return self.person_set.filter(team=self).all()
+
+    @property
     def captain(self):
         return self.person_set.filter(captain=True).first()
 

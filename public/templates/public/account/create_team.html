@@ -4,7 +4,7 @@
     <form class="col s12" action="{% url 'public:create_team' %}" method="POST">
       {% csrf_token %}
       <div class="row">
-        <div class="input-field col s6 offset-s3">
+        <div class="input-field col s12 m8 offset-m2">
           <i class="material-icons prefix">school</i>
           <select name="school_id" class="select">
             {% for school in schools %}
@@ -13,7 +13,7 @@
           </select>
           <label>Université/Ecole</label>
         </div>
-        <div class="input-field col s6 offset-s3">
+        <div class="input-field col s12 m8 offset-m2">
           <i class="material-icons prefix">people</i>
           <input name="name" id="icon_prefix" type="text" class="validate">
           <label for="icon_prefix">Nom de l'équipe</label>

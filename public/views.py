@@ -1,4 +1,5 @@
 import datetime as dt
+import random
 
 from django.conf import settings
 from django.contrib import messages
@@ -6,10 +7,12 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.mail import EmailMessage
 from django.core.urlresolvers import reverse
+from django.db import connection
 from django.db.models.aggregates import Count, Max, Min
 from django.http import Http404
 from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
+from django.utils import timezone
 from itsdangerous import URLSafeTimedSerializer
 
 from public.models import Person, User, School, Submission, Team
@@ -20,12 +23,28 @@ TS = URLSafeTimedSerializer(settings.SECRET_KEY)
 
 
 def index(request):
-    teams = Team.objects.annotate(best_score=Max('person__submission__score'),
-                                  nbr_submissions=Count('person__submission'),
-                                  last_submission=Min('person__submission__at'))\
-                        .order_by('best_score')
+    cursor = connection.cursor()
+    cursor.execute('''
+    SELECT
+        teams.name as name,
+        schools.name || ', ' ||schools.city as school ,
+        MAX(submissions.score) as best_score,
+        COUNT(submissions.id) as nbr_submissions,
+        strftime('%d/%m/%Y', MIN(submissions.at)) as last_submission
+    FROM
+        persons,
+        submissions,
+        teams,
+        schools
+    WHERE
+        persons.team_id = teams.id AND
+        submissions.by_id = persons.id AND
+        schools.id = teams.school_id
+    GROUP BY
+        teams.id;
+    ''')
     context = {
-        'teams': teams,
+        'cursor': cursor,
     }
     return render(request, 'public/index.html', context)
 
@@ -105,7 +124,7 @@ def login_user(request):
 
 def logout_user(request):
     logout(request)
-    return render(request, 'public/index.html')
+    return redirect('public:index')
 
 
 def password_forgotten(request):
@@ -165,26 +184,93 @@ def password_reset(request, token):
     return render(request, 'public/auth/password_reset.html', context)
 
 
-@login_required(login_url='/login/')
+@login_required(login_url='/login')
 def account(request):
-    context = {
-        'schools': School.objects.order_by('name').all(),
-        'submissions': Submission.objects.filter(by=request.user.person)\
-                                         .order_by('at')\
-                                         .all(),
-        'team_members': request.user.person.team.members
-    }
+
+    person = request.user.person
+    team = person.team
+
+    # The person has a team
+    if team:
+        context = {
+            'team_members': [
+                {
+                    'full_name': member.full_name,
+                    'is_captain': member.is_captain,
+                    'submissions': member.submission_set.filter(team=person.team)\
+                                                        .order_by('at').all()
+                }
+                for member in team.person_set.all()
+            ],
+            'teams': Team.objects.order_by('name').all()
+        }
+    # The user doesn't yet have a team
+    else:
+        context = {
+            'schools': School.objects.order_by('name').all(),
+            'teams': Team.objects.order_by('name').all()
+        }
+
     return render(request, 'public/account.html', context)
 
 
-@login_required(login_url='/login/')
+@login_required(login_url='/login')
+def join_team(request):
+    form = request.POST
+    team = Team.objects.filter(id=form['team_id']).first()
+    captain = team.captain
+    person = request.user.person
+    if person.team == captain.team:
+        messages.success(request, 'Vous êtes déjà membre de cette équipe.')
+        return redirect('public:account')
+    # Send a reset email
+    token = TS.dumps(captain.user.email, salt='email-join-key')
+    context = {
+        'link': request.build_absolute_uri(reverse('public:accept_member',
+                                                   kwargs={
+                                                       'token': token,
+                                                       'person_id': person.id
+                                                   })),
+        'team': team,
+        'captain': captain,
+        'person': person
+    }
+    subject = 'Demande pour rejoindre votre équipe'
+    sender = 'noreply.aidor@gmail.com'
+    recipient = captain.user.email
+    message = render_to_string('public/email/accept_member.html', context)
+    msg = EmailMessage(subject, message, sender, [recipient])
+    msg.content_subtype = 'html'
+    msg.send()
+    # Redirect and notify the user that the email has been sent
+    messages.success(request, "Votre demande a été envoyée par email au capitaine de l'équipe.")
+    return redirect('public:index')
+
+
+@login_required(login_url='/login')
+def accept_member(request, token, person_id):
+    form = request.POST
+    try:
+        email = TS.loads(token, salt='email-join-key', max_age=86400)
+    except:
+        raise Http404
+
+    person = Person.objects.filter(id=person_id).first()
+    person.team = request.user.person.team
+    person.save()
+
+    messages.success(request, '{} a rejoint votre équipe.'.format(person.full_name))
+    return redirect('public:account')
+
+
+@login_required(login_url='/login')
 def create_team(request):
     form = request.POST
     school = School.objects.filter(id=form['school_id']).first()
-    team = Team(name=form['name'], school=school, creation=dt.datetime.now())
+    team = Team(name=form['name'], school=school, creation=timezone.now())
     team.save()
     request.user.person.team = team
-    request.user.person.captain = True
+    request.user.person.is_captain = True
     request.user.person.save()
     return redirect('public:account')
 
@@ -194,11 +280,13 @@ def make_submission(request):
     file = request.FILES['file']
     rows = file.read().decode('utf-8').splitlines()
     data = [row.split(',') for row in rows]
+    # TODO: do something with the data
     submission = Submission(
-        at=dt.datetime.now(),
+        at=timezone.now(),
         by=request.user.person,
+        team=request.user.person.team,
         valid=True,
-        score=1
+        score=random.random()
     )
     submission.save()
     return redirect('public:account')

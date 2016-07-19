@@ -27,13 +27,13 @@
         </thead>
         <tbody>
           <tr>
-            {% for team in teams %}
+            {% for c in cursor %}
               <td>{{ forloop.counter }}</td>
-              <td>{{ team.name }}</td>
-              <td>{{ team.school }}</td>
-              <td>{{ team.best_score }}</td>
-              <td>{{ team.nbr_submissions }}</td>
-              <td>{{ team.last_submission|date:"d/m/Y" }}</td>
+              <td>{{ c.0 }}</td>
+              <td>{{ c.1 }}</td>
+              <td>{{ c.2|floatformat:5 }}</td>
+              <td>{{ c.3 }}</td>
+              <td>{{ c.4 }}</td>
             {% endfor %}
           </tr>
         </tbody>

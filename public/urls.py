@@ -14,6 +14,8 @@ urlpatterns = [
     url(r'^password-forgotten$', views.password_forgotten, name='password_forgotten'),
     url(r'^password-reset/(?P<token>.+)$', views.password_reset, name='password_reset'),
     url(r'^account$', views.account, name='account'),
+    url(r'^join-team$', views.join_team, name='join_team'),
+    url(r'^accept-member/(?P<token>.+)/(?P<person_id>.+)$', views.accept_member, name='accept_member'),
     url(r'^create-team$', views.create_team, name='create_team'),
     url(r'^make-submission$', views.make_submission, name='make_submission'),
 ]

@@ -1,33 +1,13 @@
 <div class="section">
   <h2>Votre équipe</h2>
   <div class="section">
-    <h3>Soumissions</h3>
-    <table class="centered striped responsive-table">
-      <thead>
-        <tr>
-          <th data-field="date"><i class="fa fa-calendar"></i> Date</th>
-          <th data-field="time"><i class="fa fa-clock-o"></i> Heure</th>
-          <th data-field="student"><i class="fa fa-user"></i> Etudiant</th>
-          <th data-field="score"><i class="fa fa-bullseye"></i> Score</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          {% for submission in submissions %}
-            <td>{{ submission.at|date:"d/m/Y" }}</td>
-            <td>{{ submission.at|time:"H:i" }}</td>
-            <td>{{ submission.by.full_name }}</td>
-            <td>{{ submission.score }}</td>
-          {% endfor %}
-        </tr>
-      </tbody>
-    </table>
+    <div id="container" style="width:100%; height:400px;"></div>
   </div>
   <div class="section">
     <ul class="collection with-header">
       <li class="collection-header"><h3>Membres</h3></li>
       {% for member in team_members %}
-        <li class="collection-item"><div>{{ member.full_name }}{% if member.captain %}<a href="#!" class="secondary-content"><i class="material-icons">assignment_ind</i></a>{% endif %}</div></li>
+        <li class="collection-item"><div>{{ member.full_name }}{% if member.is_captain %}<a href="#!" class="secondary-content"><i class="material-icons">assignment_ind</i></a>{% endif %}</div></li>
       {% endfor %}
     </ul>
   </div>

@@ -8,7 +8,7 @@
   {% else %}
     {% include "public/account/team.html" %}
     {% include "public/account/make_submission.html" %}
-    {% include "public/account/change_team.html" %}
+    {% include "public/account/join_team.html" %}
   {% endif %}
 
 {% endblock %}
@@ -19,6 +19,75 @@
   <script type="text/javascript">
     $(document).ready(function() {
       $('.select').material_select();
+    });
+  </script>
+
+  <script src="http://code.highcharts.com/highcharts.js"></script>
+
+  <script type="text/javascript">
+    $(function () {
+        $('#container').highcharts({
+
+            chart: {
+                type: 'spline',
+                zoomType: 'x'
+            },
+
+            title: {
+                text: 'Soumissions par étudiant au cours du temps'
+            },
+
+            legend: {
+                symbolWidth: 50
+            },
+
+            xAxis: {
+                type: 'datetime',
+                title: {
+                    text: 'Date et heure'
+                }
+            },
+
+            yAxis: {
+                title: {
+                    text: 'Score'
+                },
+                min: 0
+            },
+
+            tooltip: {
+                headerFormat: '<b>{series.name}</b><br>',
+                pointFormat: '{point.x:%Y/%m/%d %H:%M:%S}<br>Score - <b>{point.y:.2f}</b>'
+            },
+
+            plotOptions: {
+                spline: {
+                    marker: {
+                        enabled: true
+                    }
+                }
+            },
+
+            series: [
+                {% for member in team_members %}
+                    {
+                        name: "{{ member.full_name }}",
+                        dashStyle: 'shortdot',
+                        data: [
+                            {% for submission in member.submissions %}
+                              [Date.UTC("{{ submission.at.year }}",
+                                        "{{ submission.at.month }}",
+                                        "{{ submission.at.day }}",
+                                        "{{ submission.at.hour }}",
+                                        "{{ submission.at.minute }}",
+                                        "{{ submission.at.second }}"),
+                               parseFloat("{{ submission.score }}")],
+                            {% endfor %}
+                        ]
+                    },
+                {% endfor %}
+            ]
+        });
     });
   </script>
 {% endblock %}

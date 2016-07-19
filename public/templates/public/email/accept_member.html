@@ -1,0 +1,7 @@
+<p>
+Bonjour {{ captain.full_name }}. {{ person.full_name }} né le {{ person.date_of_birth|date:"d/m/Y" }} avec l'adresse email {{ person.user.email }} a demandé à rejoindre votre équipe ({{ team.name }}).
+</p>
+
+<p>
+Pour que cette personne rejoigne votre équipe, vous pouvez <a href="{{ link }}"><b>cliquer sur ce lien</b></a>. Si au contraire vous ne voulez pas que cette personne rejoigne votre équipe, vous pouvez ignorer cet email.
+</p>

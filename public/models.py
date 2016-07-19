@@ -31,12 +31,8 @@ class Team(models.Model):
         return '{}, {}, {}'.format(self.name, self.school.name, self.school.city)
 
     @property
-    def members(self):
-        return self.person_set.filter(team=self).all()
-
-    @property
     def captain(self):
-        return self.person_set.filter(captain=True).first()
+        return self.person_set.filter(is_captain=True).first()
 
 
 class Person(models.Model):
@@ -49,31 +45,13 @@ class Person(models.Model):
     last_name = models.CharField(verbose_name='Last name', max_length=100)
     date_of_birth = models.DateField(verbose_name='Date of birth')
     team = models.ForeignKey(Team, null=True)
-    captain = models.BooleanField(default=False)
+    is_captain = models.BooleanField(default=False, verbose_name='Captain')
 
     USERNAME_FIELD = 'email'
 
     @property
-    def postal_address(self):
-        '''
-        The `postal_address` contains information ordered by importance, from
-        minor to major.
-        '''
-        return '{}, {}'.format(
-            self.full_name,
-            self.location.address
-        )
-
-    @property
     def full_name(self):
-        '''
-        The `full_name` is the concatenation of the `first_name` and the
-        `last_name`.
-        '''
         return '{} {}'.format(self.first_name, self.last_name)
-
-    def __str__(self):
-        return self.full_name
 
     def create_user(self, email, password):
         '''
@@ -86,6 +64,9 @@ class Person(models.Model):
         user.set_password(password)
         user.save()
 
+    def __str__(self):
+        return self.full_name
+
 
 class Submission(models.Model):
 
@@ -95,6 +76,7 @@ class Submission(models.Model):
 
     at = models.DateTimeField(verbose_name='At')
     by = models.ForeignKey(Person)
+    team = models.ForeignKey(Team)
     valid = models.BooleanField(verbose_name='Valid')
     score = models.FloatField(verbose_name='Score')
 

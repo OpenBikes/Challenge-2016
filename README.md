@@ -4,7 +4,7 @@
 
 ### Installation
 
-- `pip install -r requirements`
+- `pip install -r requirements.txt`
 - `python manage.py migrate`
 - `python manage.py makemigrations public`
 - `python manage.py migrate`

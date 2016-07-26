@@ -197,7 +197,7 @@ def account(request):
                 {
                     'full_name': member.full_name,
                     'is_captain': member.is_captain,
-                    'submissions': member.submission_set.filter(team=person.team)\
+                    'submissions': member.submission_set.filter(team=person.team)
                                                         .order_by('at').all()
                 }
                 for member in team.person_set.all()

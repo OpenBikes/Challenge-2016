@@ -84,6 +84,28 @@ class Submission(models.Model):
         return '{}, {}, {}'.format(self.by, self.by.team, self.at)
 
 
+class Newsletter(models.Model):
+
+    class Meta:
+        db_table = 'newsletter'
+        verbose_name_plural = 'Newsletters'
+
+    USER_TYPES = (
+        ('captain', 'Only team leaders'),
+        ('student', 'All students'),
+    )
+    STATUS_CHOICES = (
+        ('queue', 'In Queue'),
+        ('sent', 'Sent'),
+    )
+
+    usertype = models.CharField(max_length=50, choices=USER_TYPES, verbose_name='User type')
+    subject = models.CharField(max_length=100, verbose_name='Subject')
+    message = models.TextField(blank=True, verbose_name='Message')
+    sentdate = models.DateTimeField(auto_now=True, verbose_name='Sent date')
+    status = models.CharField(max_length=30, default='queue', choices=STATUS_CHOICES, verbose_name='Email status')
+
+
 class UserManager(BaseUserManager):
 
     def create_user(self, email, password=None):

@@ -195,6 +195,7 @@ def account(request):
         context = {
             'team_members': [
                 {
+                    'id': member.id,
                     'full_name': member.full_name,
                     'is_captain': member.is_captain,
                     'submissions': member.submission_set.filter(team=person.team)
@@ -289,4 +290,14 @@ def make_submission(request):
         score=random.random()
     )
     submission.save()
+    return redirect('public:account')
+
+
+@login_required(login_url='/login/')
+def remove_team_member(request, person_id):
+    person = Person.objects.filter(id=person_id).first()
+    person.team = None
+    person.save()
+
+    messages.success(request, '{} a été retiré de votre équipe.'.format(person.full_name))
     return redirect('public:account')

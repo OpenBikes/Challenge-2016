@@ -1,3 +1,4 @@
 Django==1.9.7
 django-debug-toolbar==1.5
+gunicorn==19.4.5
 itsdangerous==0.24

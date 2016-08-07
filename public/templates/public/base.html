@@ -4,13 +4,14 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
-  <title>Challenge 2016</title>
+  <link rel="icon" href="/static/favicon.ico" />
 
   <!-- CSS -->
   <link type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/icon?family=Material+Icons" />
-  <link type="text/css" rel="stylesheet" href="/static/css/materialize.min.css" />
-  <link type="text/css" rel="stylesheet" href="/static/css/font-awesome.min.css" />
+  <link type="text/css" rel="stylesheet" href="/static/vendor/css/materialize.min.css" />
+  <link type="text/css" rel="stylesheet" href="/static/vendor/css/font-awesome.min.css" />
 
+  <title>Challenge 2016</title>
 </head>
 
 <body>
@@ -36,12 +37,11 @@
   {% block javascript %}
 
     <!-- JavaScript -->
-    <script type="text/javascript" src="/static/js/jquery-3.1.0.min.js"></script>
-    <script type="text/javascript" src="/static/js/materialize.min.js"></script>
+    <script type="text/javascript" src="/static/vendor/js/jquery-3.1.0.min.js"></script>
+    <script type="text/javascript" src="/static/vendor/js/materialize.min.js"></script>
 
     <script type="text/javascript">
       $(document).ready(function($) {
-          // Setup navigation bar
           $('#navbar-collapse').sideNav();
       });
     </script>
@@ -59,6 +59,7 @@ body {
 
 main {
     padding-top: 40px;
+    padding-bottom: 40px;
     flex: 1 0 auto;
 }
 </style>

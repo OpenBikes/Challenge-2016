@@ -3,3 +3,5 @@
 db.sqlite3
 migrations/
 .DS_Store
+# Private stuff
+.env

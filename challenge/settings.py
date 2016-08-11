@@ -12,6 +12,11 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 
 import os
 
+from dotenv import load_dotenv, find_dotenv
+
+# Load the `.env` file at the root of the repository
+load_dotenv(find_dotenv())
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -125,8 +130,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # Email settings
-EMAIL_HOST = 'smtp.googlemail.com'
-EMAIL_HOST_USER = 'noreply.aidor'
-EMAIL_HOST_PASSWORD = '464PK2wnSY774_K'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+EMAIL_HOST = os.environ.get('EMAIL_HOST')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = os.environ.get('EMAIL_PORT')
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS')

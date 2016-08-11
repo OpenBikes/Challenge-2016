@@ -301,3 +301,19 @@ def remove_team_member(request, person_id):
 
     messages.success(request, '{} a été retiré de votre équipe.'.format(person.full_name))
     return redirect('public:account')
+
+
+@login_required(login_url='/login/')
+def name_captain(request, person_id):
+
+    # Destitute the current captain
+    request.user.person.is_captain = False
+    request.user.person.save()
+
+    # Promote the chosen member
+    person = Person.objects.filter(id=person_id).first()
+    person.is_captain = True
+    person.save()
+
+    messages.success(request, '{} est maintenant le capitaine de votre équipe.'.format(person.full_name))
+    return redirect('public:account')

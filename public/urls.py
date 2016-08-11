@@ -19,4 +19,5 @@ urlpatterns = [
     url(r'^create-team$', views.create_team, name='create_team'),
     url(r'^make-submission$', views.make_submission, name='make_submission'),
     url(r'^remove-team-member/(?P<person_id>.+)$', views.remove_team_member, name='remove_team_member'),
+    url(r'^name-captain/(?P<person_id>.+)$', views.name_captain, name='name_captain'),
 ]

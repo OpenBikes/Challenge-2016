@@ -12,12 +12,15 @@
             {{ member.full_name }}
             <!-- Captain badge -->
             {% if member.is_captain %}
-              <a href="#!" class="secondary-content tooltipped" data-position="left" data-delay="0" data-tooltip="Capitaine d'équipe">
+              <a href="#!" class="secondary-content tooltipped" data-position="right" data-delay="0" data-tooltip="Capitaine d'équipe">
                 <i class="material-icons">assignment_ind</i>
               </a>
             {% endif %}
             <!-- Remove team member button -->
             {% if user.person.is_captain and not member.is_captain %}
+              <a style="margin-left: 10px;" href="/name-captain/{{ member.id }}" class="secondary-content tooltipped" data-position="right" data-delay="0" data-tooltip="Nommer capitaine">
+                <i style="color: #228b22;" class="material-icons">assignment_ind</i>
+              </a>
               <a href="/remove-team-member/{{ member.id }}" class="secondary-content tooltipped" data-position="left" data-delay="0" data-tooltip="Supprimer de l'équipe">
                 <i style="color: #990000;" class="material-icons">not_interested</i>
               </a>

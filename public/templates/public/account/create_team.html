@@ -6,9 +6,9 @@
       <div class="row">
         <div class="input-field col s12 m8 offset-m2">
           <i class="material-icons prefix">school</i>
-          <select name="school_id" class="select">
-            {% for school in schools %}
-              <option value="{{ school.id }}">{{ school }}</option>
+          <select name="curriculum_id" class="select">
+            {% for curriculum in curriculums %}
+              <option value="{{ curriculum.id }}">{{ curriculum }}</option>
             {% endfor %}
           </select>
           <label>Université/Ecole</label>

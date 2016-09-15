@@ -1,16 +1,16 @@
 from django.core.management.base import BaseCommand
 
-from public.models import School
+from public.models import Curriculum
 
 
 class Command(BaseCommand):
 
-    help = 'Add a school'
+    help = 'Add a curriculum'
 
     def add_arguments(self, parser):
         parser.add_argument('name', type=str)
-        parser.add_argument('city', type=str)
+        parser.add_argument('school', type=str)
 
     def handle(self, *args, **options):
-        school = School(name=options['name'], city=options['city'])
-        school.save()
+        curriculum = Curriculum(name=options['name'], school=options['school'])
+        curriculum.save()

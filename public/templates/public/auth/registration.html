@@ -1,6 +1,8 @@
 {% extends 'public/base.html' %}
 
 {% block content %}
+<p class="flow-text">Après vous être inscrit et après avoir confirmé votre adresse e-mail, vous pourrez créer une équipe dont vous serez le capitaine.</p>
+
 <div class="row col s12">
   <form action="/register" method="POST">
     {% csrf_token %}

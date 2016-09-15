@@ -39,7 +39,8 @@ def index(request):
     WHERE
         persons.team_id = teams.id AND
         submissions.by_id = persons.id AND
-        curriculums.id = teams.curriculum_id
+        curriculums.id = teams.curriculum_id AND 
+        submissions.at < datetime('now', '-1 hour')
     GROUP BY
         teams.id;
     ''')

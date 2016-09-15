@@ -80,7 +80,12 @@ def register(request):
         message = render_to_string('public/email/auth/registration_confirmation.html', context)
         msg = EmailMessage(subject, message, sender, [recipient])
         msg.content_subtype = 'html'
-        msg.send()
+        try:
+            msg.send()
+            print('Email sent')
+        except Exception as exc:
+            person.delete()
+            raise exc
         # Notify the user
         context = {
             'email': form['email'],

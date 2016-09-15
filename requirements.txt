@@ -1,5 +1,6 @@
 Django==1.9.7
 django-debug-toolbar==1.5
+django-dotenv-1.4.1
 gunicorn==19.4.5
 itsdangerous==0.24
 whitenoise==3.2.1

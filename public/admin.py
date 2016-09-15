@@ -6,9 +6,9 @@ from django.shortcuts import render
 from django.template.loader import render_to_string
 
 from .models import (
+    Curriculum,
     Person,
     User,
-    School,
     Submission,
     Team,
     Newsletter
@@ -37,12 +37,12 @@ class PersonAdmin(admin.ModelAdmin):
     ordering = list_display
 
 
-@admin.register(School)
-class SchoolAdmin(admin.ModelAdmin):
+@admin.register(Curriculum)
+class CurriculumAdmin(admin.ModelAdmin):
 
     list_display = (
         'name',
-        'city'
+        'school'
     )
 
     search_fields = list_display

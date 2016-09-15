@@ -4,17 +4,17 @@ from django.contrib.auth.models import (
 )
 
 
-class School(models.Model):
+class Curriculum(models.Model):
 
     class Meta:
-        db_table = 'schools'
-        verbose_name_plural = 'Schools'
+        db_table = 'curriculums'
+        verbose_name_plural = 'Curriculums'
 
-    name = models.CharField(verbose_name='School', max_length=50)
-    city = models.CharField(verbose_name='City', max_length=50)
+    name = models.CharField(verbose_name='Curriculum', max_length=50)
+    school = models.CharField(verbose_name='School', max_length=50)
 
     def __str__(self):
-        return '{}, {}'.format(self.name, self.city)
+        return '{}, {}'.format(self.name, self.school)
 
 
 class Team(models.Model):
@@ -25,10 +25,10 @@ class Team(models.Model):
 
     name = models.CharField(verbose_name='Name', max_length=50)
     creation = models.DateField(verbose_name='Date of creation')
-    school = models.ForeignKey(School)
+    curriculum = models.ForeignKey(Curriculum, null=True)
 
     def __str__(self):
-        return '{}, {}, {}'.format(self.name, self.school.name, self.school.city)
+        return '{}, {}, {}'.format(self.name, self.curriculum.name, self.curriculum.school)
 
     @property
     def captain(self):

@@ -15,7 +15,7 @@ from django.template.loader import render_to_string
 from django.utils import timezone
 from itsdangerous import URLSafeTimedSerializer
 
-from public.models import Person, User, School, Submission, Team
+from public.models import Person, User, Curriculum, Submission, Team
 
 
 # Random token generator
@@ -27,7 +27,7 @@ def index(request):
     cursor.execute('''
     SELECT
         teams.name as name,
-        schools.name || ', ' ||schools.city as school ,
+        curriculums.name || ', ' ||curriculums.school as curriculum,
         MAX(submissions.score) as best_score,
         COUNT(submissions.id) as nbr_submissions,
         strftime('%d/%m/%Y', MIN(submissions.at)) as last_submission
@@ -35,12 +35,11 @@ def index(request):
         persons,
         submissions,
         teams,
-        schools
+        curriculums
     WHERE
         persons.team_id = teams.id AND
         submissions.by_id = persons.id AND
-        schools.id = teams.school_id AND
-        submissions.at < datetime('now', '-1 hour')
+        curriculums.id = teams.curriculum_id
     GROUP BY
         teams.id;
     ''')
@@ -221,7 +220,7 @@ def account(request):
     # The user doesn't yet have a team
     else:
         context = {
-            'schools': School.objects.order_by('name').all(),
+            'curriculums': Curriculum.objects.order_by('name').all(),
             'teams': Team.objects.order_by('name').all()
         }
 
@@ -282,8 +281,9 @@ def accept_member(request, token, person_id):
 @login_required(login_url='/login')
 def create_team(request):
     form = request.POST
-    school = School.objects.filter(id=form['school_id']).first()
-    team = Team(name=form['name'], school=school, creation=timezone.now())
+    curriculum = Curriculum.objects.filter(id=form['curriculum_id']).first()
+    team = Team(name=form['name'], curriculum=curriculum,
+                creation=timezone.now())
     team.save()
     request.user.person.team = team
     request.user.person.is_captain = True

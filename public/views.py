@@ -27,7 +27,7 @@ def index(request):
     cursor.execute('''
     SELECT
         teams.name as name,
-        schools.name || ', ' ||schools.city as school ,
+        curriculums.name || ', ' ||curriculums.school as curriculum,
         MAX(submissions.score) as best_score,
         COUNT(submissions.id) as nbr_submissions,
         strftime('%d/%m/%Y', MIN(submissions.at)) as last_submission
@@ -35,11 +35,11 @@ def index(request):
         persons,
         submissions,
         teams,
-        schools
+        curriculums
     WHERE
         persons.team_id = teams.id AND
         submissions.by_id = persons.id AND
-        schools.id = teams.school_id
+        curriculums.id = teams.curriculum_id
     GROUP BY
         teams.id;
     ''')

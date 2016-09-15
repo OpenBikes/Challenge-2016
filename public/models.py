@@ -25,7 +25,7 @@ class Team(models.Model):
 
     name = models.CharField(verbose_name='Name', max_length=50)
     creation = models.DateField(verbose_name='Date of creation')
-    Curriculum = models.ForeignKey(Curriculum)
+    curriculum = models.ForeignKey(Curriculum, null=True)
 
     def __str__(self):
         return '{}, {}, {}'.format(self.name, self.curriculum.name, self.curriculum.school)

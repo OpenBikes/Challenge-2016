@@ -68,7 +68,7 @@ class TeamAdmin(admin.ModelAdmin):
 
     list_display = (
         'name',
-        'school'
+        'curriculum'
     )
 
     search_fields = list_display

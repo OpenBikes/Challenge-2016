@@ -39,12 +39,7 @@ def index(request):
     WHERE
         persons.team_id = teams.id AND
         submissions.by_id = persons.id AND
-<<<<<<< HEAD
-        schools.id = teams.school_id AND
-        submissions.at < datetime('now', '-1 hour')
-=======
         curriculums.id = teams.curriculum_id
->>>>>>> ea5fcb51ec5aa82ff9e4295f3442ce3df9b14b69
     GROUP BY
         teams.id;
     ''')
@@ -287,7 +282,8 @@ def accept_member(request, token, person_id):
 def create_team(request):
     form = request.POST
     curriculum = Curriculum.objects.filter(id=form['curriculum_id']).first()
-    team = Team(name=form['name'], curriculum=curriculum, creation=timezone.now())
+    team = Team(name=form['name'], curriculum=curriculum,
+                creation=timezone.now())
     team.save()
     request.user.person.team = team
     request.user.person.is_captain = True

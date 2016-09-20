@@ -14,7 +14,10 @@ class Curriculum(models.Model):
     school = models.CharField(verbose_name='School', max_length=50)
 
     def __str__(self):
-        return '{}, {}'.format(self.name, self.school)
+        full_name = '{}, {}'.format(self.name, self.school)
+        if full_name.startswith('*'):
+            return full_name[3:]
+        return full_name
 
 
 class Team(models.Model):

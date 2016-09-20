@@ -4,11 +4,29 @@
 
 <ul class="collection">
   <li class="collection-item">
-    <h5>Why?</h5>
-    <p class="flow-text">Because</p>
+    <h5>Quelles sont les modalités et les étapes du concours ?</h5>
+    <p>Nous vous mettons à disposition, à partir du <b>mercredi 5 octobre 2016 à 10 heures</b>, des données d'entraînement allant du 1er avril au 5 octobre à 10 heures. Nous vous fournissons un fichier de test à remplir et à soumettre à partir de votre espace compte. Vous pouvez faire autant de soumissions que vous le voulez, le tableau des scores sur la page d'accueil classera les équipes selon leur meilleur score.</p>
+    <p>Le <b>12 janvier 2017</b>, nous vous fournirons de nouvelles données et un nouveau fichier de test. Vous pourrez alors faire une soumission qui sera celle qui détermine le gagnant du concours. Vous auLors de cette phase du concours, seulement la dernière soumission sera prise en compte. Vous aurez jusqu'au 20 janvier pour soumettre une réponse.</p>
+    <p>La solution finale que vous nous enverrai en janvier devra inclure un fichier CSV réponse et le code qui a servi à générer ce fichier réponse. Vous pouvez utiliser le langage de programmation qui vous plaît. Il va de soit qu'un fichier réponse ne sera pas pris en compte si l'on s'aperçoit vous ne l'avez pas généré à partir de votre programme (par exemple en remplissant le fichier manuellement). Nous vous encourageons aussi à nous fournir un code lisible et commenté, bien que ces critères ne rentrent pas en jeu pour le classement final.</p>
+  </li>
+  <li class="collection-item">
+    <h5>Pourquoi est-ce qu'une erreur s'affice lorsque j'essaye de soumettre un fichier réponse ?</h5>
+    <p>Vous avez simplement à remplir les cellules vides dans le fichier réponse que nous vous fournissons. N'essayez pas de changer des cellules pré-existantes ou bien de changer l'encodage initial (UTF-8) du fichier.</p>
+  </li>
+  <li class="collection-item">
+    <h5>Comment évaluez-vous le score d'un fichier réponse ?</h5>
+    <p>Lorsque vous soumettez un fichier réponse, un programme parcourt le fichier ligne par ligne et compare chaque ligne à un fichier qui contient les réponses exactes que nous possédons. A chaque ligne le programme calcule l'erreur entre votre réponse et la réalité. C'est la moyenne des erreurs au carré (MSE) qui est prise en compte.</p>
+  </li>
+  <li class="collection-item">
+    <h5>Pourquoi est-ce que le tableau des scores ne se met-il pas à jour lorsque je fais une soumission ?</h5>
+    <p>Pour diverses raisons, le score associé à un fichier réponse n'est pris en compte qu'une heure après la soumission du fichier.</p>
+  </li>
+  <li class="collection-item">
+    <h5>Est-ce que l'on peut utiliser des données externes (évènements culturels, données météos plus fines) ?</h5>
+    <p>Non, vous ne pouvez pas.</p>
   </li>
 </ul>
 
-
+<p class="flow-text">Pour tout renseignement quel qu'il soit, vous pouvez envoyer un e-mail à <b>contact.openbikes@gmail.com<b>.</p>
 
 {% endblock %}

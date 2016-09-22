@@ -2,6 +2,8 @@
 
 {% block content %}
 
+  <h1>{{ user.person.team.name }}</h1>
+
   <p class="flow-text">Les soumissions ne sont pas encore autorisées. Vous pourrez revenir sur cette page après la première semaine d'octobre pour commencer à soumettre des fichiers réponses.</p>
 
   {% if user.person.team == None %}

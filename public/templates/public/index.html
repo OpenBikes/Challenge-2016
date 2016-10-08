@@ -32,16 +32,16 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            {% for c in cursor %}
+          {% for c in cursor %}
+            <tr>
               <td>{{ forloop.counter }}</td>
               <td>{{ c.0 }}</td>
               <td>{{ c.1 }}</td>
               <td>{{ c.2|floatformat:5 }}</td>
               <td>{{ c.3 }}</td>
               <td>{{ c.4 }}</td>
-            {% endfor %}
-          </tr>
+            </tr>
+          {% endfor %}
         </tbody>
       </table>
     </div>

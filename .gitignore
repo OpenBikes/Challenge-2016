@@ -5,3 +5,4 @@ migrations/
 .DS_Store
 # Private stuff
 .env
+test-filled.csv

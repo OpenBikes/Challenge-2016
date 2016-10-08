@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core.mail import EmailMessage
 from django.core.urlresolvers import reverse
 from django.db import connection
@@ -207,6 +208,7 @@ def account(request):
 
     person = request.user.person
     team = person.team
+    time_threshold = dt.datetime.now()-dt.timedelta(hours=1)
 
     # The person has a team
     if team:
@@ -216,7 +218,7 @@ def account(request):
                     'id': member.id,
                     'full_name': member.full_name,
                     'is_captain': member.is_captain,
-                    'submissions': member.submission_set.filter(team=person.team)
+                    'submissions': member.submission_set.filter(team=person.team, at__lt=time_threshold)
                                                         .order_by('at').all()
                 }
                 for member in team.person_set.all()
@@ -300,17 +302,30 @@ def create_team(request):
 @login_required(login_url='/login/')
 def make_submission(request):
     file = request.FILES['file']
-    rows = file.read().decode('utf-8').splitlines()
-    data = [row.split(',') for row in rows]
-    # TODO: do something with the data
+    guess = [
+        row.split(',')
+        for row in file.read().decode('utf-8').splitlines()
+    ][1:]
+    truth = [
+        row.split(',')
+        for row in open('test-filled.csv').read().splitlines()
+    ][1:]
+    total_error = 0
+    for g, t in zip(guess, truth):
+        if (g[:3] != t[:3]):
+            messages.error(request, 'Le fichier que vous avez soumis est invalide.')
+            return render(request, 'public/account.html')
+        total_error += abs((float(g[3]) if g[3] != '' else 0) - float(t[3]))
+    mean_error = total_error / len(guess)
     submission = Submission(
         at=timezone.now(),
         by=request.user.person,
         team=request.user.person.team,
         valid=True,
-        score=random.random()
+        score=mean_error
     )
     submission.save()
+    messages.success(request, 'Votre soumission a été corrigée. Vous connaîtrez son score dans une heure.')
     return redirect('public:account')
 
 

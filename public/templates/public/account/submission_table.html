@@ -1,0 +1,21 @@
+<div class="section">
+  <h2 align="center">Récapitulatif des soumissions</h2>
+  <table class="centered striped responsive-table">
+    <thead>
+      <tr>
+        <th data-field="number"><i class="fa fa-sort-numeric-asc"></i> Numéro</th>
+        <th data-field="moment"><i class="fa fa-calendar"></i> Moment</th>
+        <th data-field="score"><i class="fa fa-bullseye"></i> Score</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for submission in team_members.0.submissions %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ submission.at.day }}/{{ submission.at.month }}/{{ submission.at.year }}-{{ submission.at.hour }}:{{ submission.at.minute }}:{{ submission.at.second }}</td>
+          <td>{{ submission.score|floatformat:5 }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

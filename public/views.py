@@ -1,15 +1,12 @@
 import datetime as dt
-import random
 
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core.mail import EmailMessage
 from django.core.urlresolvers import reverse
 from django.db import connection
-from django.db.models.aggregates import Count, Max, Min
 from django.http import Http404
 from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
@@ -31,7 +28,7 @@ def index(request):
         curriculums.school as curriculum,
         MAX(submissions.score) as best_score,
         COUNT(submissions.id) as nbr_submissions,
-        strftime('%d/%m/%Y', MIN(submissions.at)) as last_submission
+        strftime('%Y/%m/%d', MIN(submissions.at)) as last_submission
     FROM
         persons,
         submissions,
@@ -218,7 +215,8 @@ def account(request):
                     'id': member.id,
                     'full_name': member.full_name,
                     'is_captain': member.is_captain,
-                    'submissions': member.submission_set.filter(team=person.team, at__lt=time_threshold)
+                    'submissions': member.submission_set.filter(team=person.team)
+                                                        .filter(at__lt=time_threshold)
                                                         .order_by('at').all()
                 }
                 for member in team.person_set.all()

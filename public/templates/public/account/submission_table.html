@@ -12,7 +12,7 @@
       {% for submission in team_members.0.submissions %}
         <tr>
           <td>{{ forloop.counter }}</td>
-          <td>{{ submission.at.year }}/{{ submission.at.month }}/{{ submission.at.day }}-{{ submission.at.hour }}:{{ submission.at.minute }}</td>
+          <td>{{ submission.at.year }}/{{ submission.at.month }}/{{ submission.at.day }} - {{ submission.at.hour }}:{{ submission.at.minute }}</td>
           <td>{{ submission.score|floatformat:5 }}</td>
         </tr>
       {% endfor %}

@@ -318,7 +318,7 @@ def make_submission(request):
         total_error += abs((float(g[3]) if g[3] != '' else 0) - float(t[3]))
     mean_error = total_error / len(guess)
     submission = Submission(
-        at=timezone.now(),
+        at=dt.datetime.now(),
         by=request.user.person,
         team=request.user.person.team,
         valid=True,

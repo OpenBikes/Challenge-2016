@@ -310,7 +310,7 @@ def make_submission(request):
     ][1:]
     total_error = 0
     for g, t in zip(guess, truth):
-        if (g[:3] != t[:3]) or t[3] == '':
+        if (g[:3] != t[:3]) or g[3] == '':
             messages.error(request, 'Le fichier que vous avez soumis est invalide.')
             return render(request, 'public/account.html')
         total_error += abs(float(g[3]) - float(t[3]))

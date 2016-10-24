@@ -40,7 +40,9 @@ def index(request):
         curriculums.id = teams.curriculum_id AND
         submissions.at < datetime('now', '-1 hour')
     GROUP BY
-        teams.id;
+        teams.id
+    ORDER BY
+        best_score;
     ''')
     context = {
         'cursor': cursor,

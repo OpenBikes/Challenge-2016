@@ -26,7 +26,7 @@ def index(request):
     SELECT
         teams.name as name,
         curriculums.school as curriculum,
-        MAX(submissions.score) as best_score,
+        MIN(submissions.score) as best_score,
         COUNT(submissions.id) as nbr_submissions,
         strftime('%Y/%m/%d', MIN(submissions.at)) as last_submission
     FROM

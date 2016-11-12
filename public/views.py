@@ -28,7 +28,7 @@ def index(request):
         curriculums.school as curriculum,
         MIN(submissions.score) as best_score,
         COUNT(submissions.id) as nbr_submissions,
-        strftime('%Y/%m/%d', MIN(submissions.at)) as last_submission
+        strftime('%Y/%m/%d', MAX(submissions.at)) as last_submission
     FROM
         persons,
         submissions,

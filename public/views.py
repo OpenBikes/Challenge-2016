@@ -39,6 +39,7 @@ def index(request):
         submissions.by_id = persons.id AND
         curriculums.id = teams.curriculum_id AND
         submissions.at < datetime('now', '-1 hour')
+        submissions.valid = 1
     GROUP BY
         teams.id
     ORDER BY
@@ -302,29 +303,40 @@ def create_team(request):
 @login_required(login_url='/login/')
 def make_submission(request):
     file = request.FILES['file']
-    guess = [
-        row.split(',')
-        for row in file.read().decode('utf-8').splitlines()
-    ][1:]
-    truth = [
-        row.split(',')
-        for row in open('test-filled.csv').read().splitlines()
-    ][1:]
-    total_error = 0
-    for g, t in zip(guess, truth):
-        if (g[:3] != t[:3]) or g[3] == '':
-            messages.error(request, 'Le fichier que vous avez soumis est invalide.')
-            return render(request, 'public/account.html')
-        total_error += abs(float(g[3]) - float(t[3]))
-    mean_error = total_error / len(guess)
+
     submission = Submission(
         at=dt.datetime.now(),
         by=request.user.person,
         team=request.user.person.team,
-        valid=True,
-        score=mean_error
+        valid=True
     )
+
+    guess = [
+        row.split(',')
+        for row in file.read().decode('utf-8').splitlines()
+    ][1:] # Skip the first row because it's the header
+
+    truth = [
+        row.split(',')
+        for row in open('test-filled.csv').read().splitlines()
+    ][1:] # Skip the first row because it's the header
+
+    total_error = 0
+
+    for g, t in zip(guess, truth):
+
+        if (g[:3] != t[:3]) or g[3] == '': # Verify that the 3 first columns are identical
+            submission.valid = False
+            submission.score = 999
+            submission.save()
+            messages.error(request, 'Le fichier que vous avez soumis est invalide.')
+            return render(request, 'public/account.html')
+
+        total_error += abs(float(g[3]) - float(t[3])) # Absolute difference
+
+    submission.score = total_error / len(guess)
     submission.save()
+
     messages.success(request, 'Votre soumission a été corrigée. Vous connaîtrez son score dans une heure.')
     return redirect('public:account')
 

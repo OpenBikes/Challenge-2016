@@ -43,7 +43,7 @@ def index(request):
         persons.team_id = teams.id AND
         submissions.by_id = persons.id AND
         curriculums.id = teams.curriculum_id AND
-        submissions.at < datetime('now', '-1 hour')
+        submissions.at < datetime('now', '-1 hour') AND
         submissions.valid = 1
     GROUP BY
         teams.id
@@ -337,10 +337,11 @@ def make_submission(request):
 
             try:
                 slack.send(
-                    msg='Un nouveau mongolien a été trouvé : \n {name} ({email}) [ÉQUIPE {team}]'.format(
+                    msg='Un nouveau mongolien a été trouvé : \n {name} ({email}) [ÉQUIPE {team}] \n Le nombre de mongoliens porte à {nb}.'.format(
                         name=request.user.person.full_name,
                         email=request.user.email,
-                        team=request.user.person.team),
+                        team=request.user.person.team,
+                        nb=Submission.objects.filter(valid=False).count()),
                     channel='#general'
                 )
             except Exception as err:

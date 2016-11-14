@@ -4,3 +4,4 @@ django-dotenv==1.4.1
 gunicorn==19.4.5
 itsdangerous==0.24
 whitenoise==3.2.1
+requests==2.11.1

@@ -15,9 +15,14 @@ from itsdangerous import URLSafeTimedSerializer
 
 from public.models import Person, User, Curriculum, Submission, Team
 
+from public.utils import Slacker
+
 
 # Random token generator
 TS = URLSafeTimedSerializer(settings.SECRET_KEY)
+slack = Slacker(
+    webhook='https://hooks.slack.com/services/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'
+)
 
 
 def index(request):
@@ -208,7 +213,7 @@ def account(request):
 
     person = request.user.person
     team = person.team
-    time_threshold = dt.datetime.now()-dt.timedelta(hours=1)
+    time_threshold = dt.datetime.now() - dt.timedelta(hours=1)
 
     # The person has a team
     if team:
@@ -314,30 +319,43 @@ def make_submission(request):
     guess = [
         row.split(',')
         for row in file.read().decode('utf-8').splitlines()
-    ][1:] # Skip the first row because it's the header
+    ][1:]  # Skip the first row because it's the header
 
     truth = [
         row.split(',')
         for row in open('test-filled.csv').read().splitlines()
-    ][1:] # Skip the first row because it's the header
+    ][1:]  # Skip the first row because it's the header
 
     total_error = 0
 
     for g, t in zip(guess, truth):
 
-        if (g[:3] != t[:3]) or g[3] == '': # Verify that the 3 first columns are identical
+        if (g[:3] != t[:3]) or g[3] == '':  # Verify that the 3 first columns are identical
             submission.valid = False
             submission.score = 999
             submission.save()
+
+            try:
+                slack.send(
+                    msg='Un nouveau mongolien a été trouvé : \n {name} ({email}) [ÉQUIPE {team}]'.format(
+                        name=request.user.person.full_name,
+                        email=request.user.email,
+                        team=request.user.person.team),
+                    channel='#general'
+                )
+            except Exception as err:
+                pass
+
             messages.error(request, 'Le fichier que vous avez soumis est invalide.')
             return render(request, 'public/account.html')
 
-        total_error += abs(float(g[3]) - float(t[3])) # Absolute difference
+        total_error += abs(float(g[3]) - float(t[3]))  # Absolute difference
 
     submission.score = total_error / len(guess)
     submission.save()
 
-    messages.success(request, 'Votre soumission a été corrigée. Vous connaîtrez son score dans une heure.')
+    messages.success(
+        request, 'Votre soumission a été corrigée. Vous connaîtrez son score dans une heure.')
     return redirect('public:account')
 
 

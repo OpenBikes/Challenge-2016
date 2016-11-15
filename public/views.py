@@ -366,14 +366,20 @@ def make_submission(request):
             WHERE submissions.team_id = teams.id AND submissions.by_id = persons.id;
         ''')
         score, team, full_name = list(best_submission)[0]
-        slack.send(
-            msg='Une nouveau super-score de {score} a été atteint par {name} [{team}]. {move_ur_ass}'.format(
-                score=score,
-                name=full_name,
-                team=team,
-                move_ur_ass='\n<@maxhalford> move your ass !' if team != 'OpenBikes' else ''),
-            channel='#general'
-        )
+        if team not in ['OpenBikes', 'LA ROUE ARRIÈRE']:
+            slack.send(
+                msg='Une nouveau super-score de {score} a été atteint par {name} [{team}]. {move_ur_ass}'.format(
+                    score=score,
+                    name=full_name,
+                    team=team,
+                    move_ur_ass='\n<@maxhalford> move your ass !'),
+                channel='#general'
+            )
+        else:
+            slack.send(
+                msg='Bravo {full_name} [{team}]'.format(full_name, team),
+                channel='#general'
+            )
     except Exception as err:
         pass
 

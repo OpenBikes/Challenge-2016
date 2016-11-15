@@ -12,3 +12,5 @@ class Slacker():
             "channel": channel
         }
         requests.post(self.webhook_url, json=payload)
+
+Candidat = 'mongolien'

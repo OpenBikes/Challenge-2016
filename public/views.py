@@ -344,7 +344,7 @@ def make_submission(request):
                         email=request.user.email,
                         team=request.user.person.team,
                         nb=Submission.objects.filter(valid=False).count()),
-                    channel='#general'
+                    channel='#challenge'
                 )
             except Exception as err:
                 pass
@@ -373,12 +373,12 @@ def make_submission(request):
                     name=full_name,
                     team=team,
                     move_ur_ass='\n<@maxhalford> move your ass !'),
-                channel='#general'
+                channel='#challenge'
             )
         else:
             slack.send(
                 msg='Bravo {full_name} [{team}]'.format(full_name, team),
-                channel='#general'
+                channel='#challenge'
             )
     except Exception as err:
         pass

@@ -16,7 +16,7 @@ from itsdangerous import URLSafeTimedSerializer
 
 from public.models import Person, User, Curriculum, Submission, Team
 
-from public.utils import Slacker, Candidat
+from public.utils import Slacker, Candidat, query_nb_submissions, query_best_submission
 
 
 # Random token generator
@@ -339,14 +339,16 @@ def make_submission(request):
 
             try:
                 slack.send(
-                    msg='Un nouveau {candidat} a été trouvé : \n {name} ({email}) [ÉQUIPE {team}] \n Le nombre de {candidat}s porte à {nb}.'.format(
+                    msg='Un nouveau {candidat} a été trouvé (x{nb}) : \n {name} ({email}) [ÉQUIPE {team}]. \n Le nombre total de mauvaises soumissions porte à {bad_submissions}.'.format(
                         candidat=Candidat,
                         name=request.user.person.full_name,
                         email=request.user.email,
                         team=request.user.person.team,
-                        nb=Submission.objects.filter(valid=False).count()),
+                        nb=query_nb_submissions(request.user.person_id),
+                        bad_submissions=Submission.objects.filter(valid=False).count()),
                     channel='#challenge'
                 )
+
             except Exception as err:
                 pass
 
@@ -359,15 +361,8 @@ def make_submission(request):
     submission.save()
 
     try:
-        # Find best submission
-        cursor = connection.cursor()
-        best_submission = cursor.execute('''
-            SELECT min(submissions.score) as best_score, teams.name, persons.first_name || " " || UPPER(persons.last_name) as full_name
-            FROM submissions, teams, persons
-            WHERE submissions.team_id = teams.id AND submissions.by_id = persons.id;
-        ''')
-        score, team, full_name = list(best_submission)[0]
-        if team != 'OpenBikes':
+        score, team, full_name = query_best_submission()
+        if team not in ['OpenBikes', 'LA ROUE ARRIÈRE']:
             slack.send(
                 msg='Une nouveau super-score de {score} a été atteint par {name} [{team}]. {move_ur_ass}'.format(
                     score=score,

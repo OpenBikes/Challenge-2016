@@ -8,6 +8,7 @@ from django.core.mail import EmailMessage
 from django.core.urlresolvers import reverse
 from django.db import connection
 from django.http import Http404
+from django.db.models import Min
 from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
 from django.utils import timezone
@@ -15,7 +16,7 @@ from itsdangerous import URLSafeTimedSerializer
 
 from public.models import Person, User, Curriculum, Submission, Team
 
-from public.utils import Slacker
+from public.utils import Slacker, Candidat
 
 
 # Random token generator
@@ -338,12 +339,13 @@ def make_submission(request):
 
             try:
                 slack.send(
-                    msg='Un nouveau mongolien a été trouvé : \n {name} ({email}) [ÉQUIPE {team}] \n Le nombre de mongoliens porte à {nb}.'.format(
+                    msg='Un nouveau {candidat} a été trouvé : \n {name} ({email}) [ÉQUIPE {team}] \n Le nombre de {candidat}s porte à {nb}.'.format(
+                        candidat=Candidat,
                         name=request.user.person.full_name,
                         email=request.user.email,
                         team=request.user.person.team,
                         nb=Submission.objects.filter(valid=False).count()),
-                    channel='#general'
+                    channel='#challenge'
                 )
             except Exception as err:
                 pass
@@ -355,6 +357,32 @@ def make_submission(request):
 
     submission.score = total_error / len(guess)
     submission.save()
+
+    try:
+        # Find best submission
+        cursor = connection.cursor()
+        best_submission = cursor.execute('''
+            SELECT min(submissions.score) as best_score, teams.name, persons.first_name || " " || UPPER(persons.last_name) as full_name
+            FROM submissions, teams, persons
+            WHERE submissions.team_id = teams.id AND submissions.by_id = persons.id;
+        ''')
+        score, team, full_name = list(best_submission)[0]
+        if team not in ['OpenBikes', 'LA ROUE ARRIÈRE']:
+            slack.send(
+                msg='Une nouveau super-score de {score} a été atteint par {name} [{team}]. {move_ur_ass}'.format(
+                    score=score,
+                    name=full_name,
+                    team=team,
+                    move_ur_ass='\n<@maxhalford> move your ass !'),
+                channel='#challenge'
+            )
+        else:
+            slack.send(
+                msg='Bravo {full_name} [{team}]'.format(full_name, team),
+                channel='#challenge'
+            )
+    except Exception as err:
+        pass
 
     messages.success(
         request, 'Votre soumission a été corrigée. Vous connaîtrez son score dans une heure.')

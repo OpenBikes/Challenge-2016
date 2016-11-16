@@ -226,6 +226,7 @@ def account(request):
                     'is_captain': member.is_captain,
                     'submissions': member.submission_set.filter(team=person.team)
                                                         .filter(at__lt=time_threshold)
+                                                        .filter(valid=True)
                                                         .order_by('at').all()
                 }
                 for member in team.person_set.all()

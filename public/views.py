@@ -362,13 +362,13 @@ def make_submission(request):
 
     try:
         score, team, full_name = query_best_submission()
-        if team not in ['OpenBikes', 'LA ROUE ARRIÈRE']:
+        if full_name not in ['Max Halford', 'Axel Bellec']:
             slack.send(
                 msg='Une nouveau super-score de {score} a été atteint par {name} [{team}]. {move_ur_ass}'.format(
                     score=score,
                     name=full_name,
                     team=team,
-                    move_ur_ass='\n<@maxhalford> move your ass !'),
+                    move_ur_ass='\n<@maxhalford> & <@axelbellec>: MOVE YOUR ASS !'),
                 channel='#challenge'
             )
         else:

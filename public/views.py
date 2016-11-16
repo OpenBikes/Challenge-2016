@@ -373,9 +373,9 @@ def make_submission(request):
             )
         else:
             slack.send(
-                msg='<@{full_name}> Bravo mon gars !'.format(
+                msg='<@{full_name}> Bravo mon gars ! (Score : {score})'.format(
                     full_name=full_name.lower().replace(' ', ''),
-                    team=team),
+                    score=score),
                 channel='#challenge'
             )
     except Exception as err:

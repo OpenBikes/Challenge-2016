@@ -366,7 +366,7 @@ def make_submission(request):
             WHERE submissions.team_id = teams.id AND submissions.by_id = persons.id;
         ''')
         score, team, full_name = list(best_submission)[0]
-        if team not in ['OpenBikes', 'LA ROUE ARRIÈRE']:
+        if team != 'OpenBikes':
             slack.send(
                 msg='Une nouveau super-score de {score} a été atteint par {name} [{team}]. {move_ur_ass}'.format(
                     score=score,

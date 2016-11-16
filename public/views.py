@@ -362,7 +362,7 @@ def make_submission(request):
 
     try:
         score, team, full_name = query_best_submission()
-        if full_name not in ['Max Halford', 'Axel Bellec']:
+        if full_name.lower().replace(' ', '') not in ['maxhalford', 'axelbellec']:
             slack.send(
                 msg='Une nouveau super-score de {score} a été atteint par {name} [{team}]. {move_ur_ass}'.format(
                     score=score,
@@ -373,7 +373,9 @@ def make_submission(request):
             )
         else:
             slack.send(
-                msg='Bravo {full_name} [{team}]'.format(full_name, team),
+                msg='<@{full_name}> Bravo mon gars !'.format(
+                    full_name=full_name.lower().replace(' ', ''),
+                    team=team),
                 channel='#challenge'
             )
     except Exception as err:

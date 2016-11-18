@@ -362,22 +362,23 @@ def make_submission(request):
 
     try:
         score, team, full_name = query_best_submission()
-        if full_name.lower().replace(' ', '') not in ['maxhalford', 'axelbellec']:
-            slack.send(
-                msg='Une nouveau super-score de {score} a été atteint par {name} [{team}]. {move_ur_ass}'.format(
-                    score=score,
-                    name=full_name,
-                    team=team,
-                    move_ur_ass='\n<@maxhalford> & <@axelbellec>: MOVE YOUR ASS !'),
-                channel='#challenge'
-            )
-        else:
-            slack.send(
-                msg='<@{full_name}> Bravo mon gars ! (Score : {score})'.format(
-                    full_name=full_name.lower().replace(' ', ''),
-                    score=score),
-                channel='#challenge'
-            )
+        if float(score) == float(total_error / len(guess)):
+            if full_name.lower().replace(' ', '') not in ['maxhalford', 'axelbellec']:
+                slack.send(
+                    msg='Une nouveau super-score de {score} a été atteint par {name} [{team}]. {move_ur_ass}'.format(
+                        score=score,
+                        name=full_name,
+                        team=team,
+                        move_ur_ass='\n<@maxhalford> & <@axelbellec>: MOVE YOUR ASS !'),
+                    channel='#challenge'
+                )
+            else:
+                slack.send(
+                    msg='<@{full_name}> Bravo mon gars ! (Score : {score})'.format(
+                        full_name=full_name.lower().replace(' ', ''),
+                        score=score),
+                    channel='#challenge'
+                )
     except Exception as err:
         pass
 

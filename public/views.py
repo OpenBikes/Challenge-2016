@@ -316,7 +316,7 @@ def make_submission_2(request):
         'submissions/{}.zip'.format(request.user.person.full_name),
         ContentFile(file.read())
     )
-    messages.success(request, 'Votre soumission a bien été prise en compte.')
+    messages.success(request, 'La soumission que vous venez de faire sera celle qui sera prise en compte pour le classement de la seconde partie du concours.')
     return redirect('public:account')
 
 

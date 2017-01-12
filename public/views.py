@@ -4,6 +4,8 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
 from django.core.mail import EmailMessage
 from django.core.urlresolvers import reverse
 from django.db import connection
@@ -304,6 +306,17 @@ def create_team(request):
     request.user.person.team = team
     request.user.person.is_captain = True
     request.user.person.save()
+    return redirect('public:account')
+
+
+@login_required(login_url='/login/')
+def make_submission_2(request):
+    file = request.FILES['file']
+    default_storage.save(
+        'submissions/{}.zip'.format(request.user.person.full_name),
+        ContentFile(file.read())
+    )
+    messages.success(request, 'Votre soumission a bien été prise en compte.')
     return redirect('public:account')
 
 

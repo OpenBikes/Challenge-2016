@@ -1,4 +1,5 @@
 import datetime as dt
+import zipfile
 
 from django.conf import settings
 from django.contrib import messages
@@ -312,12 +313,17 @@ def create_team(request):
 @login_required(login_url='/login/')
 def make_submission_2(request):
     file = request.FILES['file']
-    default_storage.save(
-        'submissions/{}.zip'.format(request.user.person.full_name),
-        ContentFile(file.read())
-    )
-    messages.success(request, 'La soumission que vous venez de faire sera celle qui sera prise en compte pour le classement de la seconde partie du concours.')
-    return redirect('public:account')
+
+    if zipfile.is_zipfile(file):
+        default_storage.save(
+            'submissions/{}.zip'.format(request.user.person.full_name),
+            ContentFile(file.read())
+        )
+        messages.success(request, 'La soumission que vous venez de faire sera celle qui sera prise en compte pour le classement de la seconde partie du concours.')
+        return redirect('public:account')
+    else:
+        messages.error(request, 'Veuillez déposer un fichier zippé.')
+        return render(request, 'public/account.html')
 
 
 @login_required(login_url='/login/')
